@@ -1,6 +1,7 @@
 use std::io::prelude::*;
 use std::net::TcpListener;
 use std::net::TcpStream;
+use std::fs;
 
 fn main() {
     let ecouteur = TcpListener::bind("127.0.0.1:7878").unwrap();
@@ -17,7 +18,13 @@ fn gestion_connexion(mut flux: TcpStream) {
 
     flux.read(&mut tampon).unwrap();
 
-    let response = "HTTP/1.1 200 OK\r\n\r\n";
+    let contenu = fs::read_to_string("hello.html").unwrap();
+
+    let response = format!(
+        "HTTP/1.1 200 {}\r\n\r\n{}",
+        contenu.len(),
+        contenu
+    );
 
     flux.write(response.as_bytes()).unwrap();
     flux.flush().unwrap();
