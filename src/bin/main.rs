@@ -9,11 +9,14 @@ use salutations::GroupeTaches;
 
 fn main() {
     let ecouteur = TcpListener::bind("127.0.0.1:7878").unwrap();
+    let groupe = GroupeTaches::new(4);
 
     for flux in ecouteur.incoming() {
         let flux = flux.unwrap();
 
-        gestion_connexion(flux);
+        groupe.executer(|| {
+            gestion_connexion(flux);
+        });
     }
 }
 
